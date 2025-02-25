@@ -8,6 +8,8 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+var CurrentFile fyne.URI
+
 // opens a file dialog and loads the selected file's content into the editor.
 func OpenFile(window fyne.Window, editor *widget.Entry) {
 	dialog.ShowFileOpen(func(reader fyne.URIReadCloser, err error) {
@@ -27,6 +29,7 @@ func OpenFile(window fyne.Window, editor *widget.Entry) {
 		}
 
 		editor.SetText(string(data))
+		CurrentFile = reader.URI()
 	}, window)
 }
 
@@ -53,4 +56,5 @@ func SaveFile(window fyne.Window, editor *widget.Entry) {
 // clears the editor's content.
 func ClearEditor(editor *widget.Entry) {
 	editor.SetText("")
+	CurrentFile = nil
 }
