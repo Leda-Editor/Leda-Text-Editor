@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
@@ -81,12 +82,13 @@ func ShowAutoSaveSettings(ui *UI) {
 		// update status label
 		if handling.IsAutoSaveEnabled() {
 			statusLabel.SetText("Auto-save is currently enabled")
+			
 		} else {
 			statusLabel.SetText("Auto-save is currently disabled")
 		}
 		
 		// Show confirmation
-		dialog.ShowInformation("Settings Applied", "Auto-save settings have been updated.", ui.Window)
+		ShowTemporaryPopup(ui.Window, "Auto-save settings have been updated.")
 	})
 	
 	// create content for dialog
@@ -107,4 +109,10 @@ func ShowAutoSaveSettings(ui *UI) {
 	settingsDialog := dialog.NewCustom("Auto-save Settings", "Close", content, ui.Window)
 	settingsDialog.Resize(fyne.NewSize(400, 300))
 	settingsDialog.Show()
+}
+
+func ShowTemporaryPopup(window fyne.Window, message string) {
+    popup := widget.NewPopUp(widget.NewLabel(message), window.Canvas())
+    popup.Show()
+    go func() { time.Sleep(5 * time.Second); popup.Hide() }()
 }
