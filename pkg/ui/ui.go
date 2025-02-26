@@ -2,10 +2,12 @@ package ui
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	handling "github.com/Leda-Editor/Leda-Text-Editor/pkg/handling"
 )
 
 // UI specifies the user interface.
@@ -28,6 +30,9 @@ type UI struct {
 	// CharacterLabel & LineLabel creates labels for the respective counters.
 	CharacterLabel *widget.Label
 	LineLabel      *widget.Label
+
+	// current file
+	CurrentFileLabel *widget.Label
 
 	// Search/Replace Sidebar
 	// SearchAreaContainer Holds Search UI
@@ -65,6 +70,7 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 		Theme:               theme,
 		CharacterLabel:      widget.NewLabelWithStyle("Characters: 0", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
 		LineLabel:           widget.NewLabelWithStyle("Lines: 0", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
+		CurrentFileLabel:	 widget.NewLabelWithStyle("Current File: None", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
 		SearchAreaContainer: container.NewVBox(),
 		SearchTermEntry:     widget.NewEntry(),
 		ReplaceTermEntry:    widget.NewEntry(),
@@ -88,6 +94,11 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 	ui.Editor.OnChanged = func(content string) {
 		ui.RenderMarkdown(content)
 		ui.UpdateCounts(content)
+	}
+
+	// update markdown preview when file changes
+	handling.OnFileChanged = func(uri fyne.URI) {
+		ui.UpdateFileLabel(uri)
 	}
 
 	return ui
@@ -137,4 +148,16 @@ func (ui *UI) UpdateCounts(content string) {
 func (ui *UI) UpdateZoomLabel() {
 	ui.ZoomLabel.SetText(fmt.Sprintf("Zoom: %d%%", ui.Theme.ZoomPercent))
 	ui.Window.Content().Refresh()
+}
+
+// called when current file is changed
+func (ui *UI) UpdateFileLabel(uri fyne.URI) {
+	if ui.CurrentFileLabel == nil  {
+		ui.CurrentFileLabel = widget.NewLabel("Current File: None")
+	}
+	filename := "None"
+	if uri != nil {
+		filename = filepath.Base(uri.Path())
+	}
+	ui.CurrentFileLabel.SetText(fmt.Sprintf("Current File: %s", filename))
 }
