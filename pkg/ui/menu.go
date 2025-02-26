@@ -12,6 +12,7 @@ func (ui *UI) CreateMenuBar() *fyne.Container {
 	fileMenu := fyne.NewMenu("File",
 		fyne.NewMenuItem("Open", func() { handling.OpenFile(ui.Window, ui.Editor) }),
 		fyne.NewMenuItem("Save", func() { handling.SaveFile(ui.Window, ui.Editor) }),
+		fyne.NewMenuItem("Save As", func() { handling.SaveFileAs(ui.Window, ui.Editor)}),
 		fyne.NewMenuItem("Exit", func() { handling.ClearEditor(ui.Editor) }),
 	)
 
