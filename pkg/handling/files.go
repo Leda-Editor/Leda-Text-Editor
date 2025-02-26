@@ -1,20 +1,21 @@
 package handling
 
 import (
+	"fmt"
 	"io"
 	"time"
-	"fmt"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/widget"
 	"fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/widget"
 )
+
 var (
 	autoSaveEnabled bool
-	autoSaveTimer *time.Timer
-	autoSaveDelay time.Duration = 5 * time.Second // default 5 seconds
-	CurrentFile fyne.URI
+	autoSaveTimer   *time.Timer
+	autoSaveDelay   time.Duration = 5 * time.Second // default 5 seconds
+	CurrentFile     fyne.URI
 )
 
 // opens a file dialog and loads the selected file's content into the editor.
@@ -98,13 +99,13 @@ func ClearEditor(editor *widget.Entry) {
 
 // changes auto-save interval
 func SetAutoSaveDelay(seconds int, editor *widget.Entry) {
-    autoSaveDelay = time.Duration(seconds) * time.Second
+	autoSaveDelay = time.Duration(seconds) * time.Second
 	fmt.Println(autoSaveDelay)
-    // if enabled, restart with new delay
-    if autoSaveEnabled {
-        StopAutoSave()
-        StartAutoSave(fyne.CurrentApp().Driver().AllWindows()[0], editor) //sends nil! ERROR !!!
-    }
+	// if enabled, restart with new delay
+	if autoSaveEnabled {
+		StopAutoSave()
+		StartAutoSave(fyne.CurrentApp().Driver().AllWindows()[0], editor) //sends nil! ERROR !!!
+	}
 }
 
 // begins automatic saving at interval
@@ -120,16 +121,16 @@ func StartAutoSave(window fyne.Window, editor *widget.Entry) {
 	scheduleAutoSave = func() {
 		autoSaveTimer = time.AfterFunc(autoSaveDelay, func() {
 			// only save if you have a current file and auto-save enabled
-            if CurrentFile != nil {
-                SaveFile(window, editor)
+			if CurrentFile != nil {
+				SaveFile(window, editor)
 				fmt.Println("saved!")
-            } else {
-                StopAutoSave() // Stop auto-save if there's no file
-            }
+			} else {
+				StopAutoSave() // Stop auto-save if there's no file
+			}
 			// schedule next save
 			if autoSaveEnabled {
 				scheduleAutoSave()
-				fmt.Println("auto-saving in: ",autoSaveDelay)
+				fmt.Println("auto-saving in: ", autoSaveDelay)
 			}
 		})
 	}
