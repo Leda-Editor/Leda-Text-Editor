@@ -16,6 +16,7 @@ var (
 	autoSaveTimer   *time.Timer
 	autoSaveDelay   time.Duration = 5 * time.Second // default 5 seconds
 	CurrentFile     fyne.URI
+	OnFileChanged func(fyne.URI)
 )
 
 // opens a file dialog and loads the selected file's content into the editor.
@@ -38,6 +39,10 @@ func OpenFile(window fyne.Window, editor *widget.Entry) {
 
 		editor.SetText(string(data))
 		CurrentFile = reader.URI() //stores current url
+
+		if OnFileChanged != nil {
+			OnFileChanged(CurrentFile)
+		}
 	}, window)
 }
 

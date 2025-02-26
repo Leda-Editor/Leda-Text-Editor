@@ -17,6 +17,8 @@ func (ui *UI) Layout() fyne.CanvasObject {
 			ui.CharacterLabel,
 			widget.NewLabel(" | "),
 			ui.LineLabel,
+			widget.NewLabel(" | "),
+			ui.CurrentFileLabel,
 			layout.NewSpacer(),
 			ui.ZoomLabel,
 		),
