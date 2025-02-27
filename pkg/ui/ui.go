@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
+	handling "github.com/Leda-Editor/Leda-Text-Editor/pkg/handling"
 )
 
 // UI specifies the user interface.
@@ -82,7 +83,19 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 	ApplyUserTheme(ui)
 	ui.Window.Content().Refresh()
 
-	ApplyUserTheme(ui)
+	win.Canvas().SetOnTypedKey(func(ev *fyne.KeyEvent) {
+		if ev.Name == fyne.KeyF {
+			ShowSearchUI(false, ui)
+		} else if ev.Name == fyne.KeyR {
+			ShowSearchUI(true, ui)
+		} else if ev.Name == fyne.KeyO {
+			handling.OpenFile(ui.Window, ui.Editor)
+		} else if ev.Name == fyne.KeyS {
+			handling.SaveFile(ui.Window, ui.Editor)
+		} else if ev.Name == fyne.KeyA {
+			handling.SaveFileAs(ui.Window, ui.Editor)
+		}
+	})
 
 	// Update Markdown Preview whenever text changes.
 	ui.Editor.OnChanged = func(content string) {
