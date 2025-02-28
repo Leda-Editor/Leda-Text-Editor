@@ -3,11 +3,14 @@ package ui
 import (
 	"fmt"
 	"image/color"
+	"strconv"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/theme"
+	handling "github.com/Leda-Editor/Leda-Text-Editor/pkg/handling"
 )
 
 // Theme struct extends Fyne's theme with custom font sizes for zoom in/out.
@@ -113,18 +116,26 @@ func (ui *UI) ApplyThemeToLayout() fyne.CanvasObject {
 }
 
 // SetCustomTheme allows switching to a fully custom theme.
-func SetCustomTheme(app fyne.App, bg, fg, primary, editorBg, menuBg, buttonBg color.Color) {
+func SetCustomTheme(app fyne.App, bg, fg, primary, editorBg, menuBg, buttonBg color.Color, zoom int) {
 	var currentZoom int = 100
 
-	// Preserve current zoom level if a custom theme is active
-	if existingTheme, ok := app.Settings().Theme().(*Theme); ok {
-		currentZoom = existingTheme.ZoomPercent
+	if currentZoom == 0 {
+		currentZoom = 100
+	}
+
+	config, err := handling.LoadConfig("config.json")
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		config = &handling.Config{} // Use an empty config if loading fails
 	}
 
 	// Apply the new theme
 	newTheme := &Theme{
-		App:         app,
-		Base:        NewCustomTheme(bg, fg, primary, editorBg, menuBg, buttonBg),
+		App: app,
+		Base: NewCustomTheme(bg, fg, primary, editorBg, menuBg, buttonBg,
+			LoadFont(config.Fonts.Default, theme.DefaultTextFont()),
+			LoadFont(config.Fonts.Bold, theme.DefaultTextBoldFont()),
+			LoadFont(config.Fonts.Italic, theme.DefaultTextItalicFont())),
 		ZoomPercent: currentZoom,
 	}
 
@@ -215,6 +226,7 @@ func NewTheme(app fyne.App) *Theme {
 func (th *Theme) ZoomIn(ui *UI) {
 	if th.ZoomPercent < 200 { // Max limit to prevent excessive zooming
 		th.ZoomPercent += 10
+		_ = handling.SaveConfig("config.json", &handling.Config{ZoomPercent: th.ZoomPercent})
 	}
 	th.ApplyTheme()
 	ui.UpdateZoomLabel()
@@ -225,6 +237,8 @@ func (th *Theme) ZoomIn(ui *UI) {
 func (th *Theme) ZoomOut(ui *UI) {
 	if th.ZoomPercent > 50 { // Min limit to keep text readable
 		th.ZoomPercent -= 10
+		_ = handling.SaveConfig("config.json", &handling.Config{ZoomPercent: th.ZoomPercent})
+
 	}
 	th.ApplyTheme()
 	ui.UpdateZoomLabel()
@@ -234,6 +248,7 @@ func (th *Theme) ZoomOut(ui *UI) {
 // ResetZoom resets the zoom level.
 func (th *Theme) ResetZoom(ui *UI) {
 	th.ZoomPercent = 100
+	_ = handling.SaveConfig("config.json", &handling.Config{ZoomPercent: 100})
 	th.ApplyTheme()
 	ui.UpdateZoomLabel()
 	ui.Window.Content().Refresh()
@@ -250,6 +265,13 @@ func (th *Theme) TextSize() float32 {
 func (th *Theme) ApplyTheme() {
 	app := fyne.CurrentApp() // Get the current Fyne app instance
 
+	// Load config from file.
+	config, err := handling.LoadConfig("config.json")
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		config = &handling.Config{} // Use an empty config if loading fails
+	}
+
 	// Load custom colors
 	bg := loadColor(app, custom_bg, colorToRGBA(theme.Color(theme.ColorNameBackground)))
 	fg := loadColor(app, custom_fg, colorToRGBA(theme.Color(theme.ColorNameForeground)))
@@ -260,7 +282,12 @@ func (th *Theme) ApplyTheme() {
 
 	// Apply the new theme while maintaining colors and font size
 	newTheme := &Theme{
-		Base:        NewCustomTheme(bg, fg, primary, editorBg, menuBg, buttonBg),
+		Base: NewCustomTheme(
+			bg, fg, primary, editorBg, menuBg, buttonBg,
+			LoadFont(config.Fonts.Default, theme.DefaultTextFont()),
+			LoadFont(config.Fonts.Bold, theme.DefaultTextBoldFont()),
+			LoadFont(config.Fonts.Italic, theme.DefaultTextItalicFont()),
+		),
 		ZoomPercent: th.ZoomPercent,
 	}
 
@@ -289,4 +316,64 @@ func (th *Theme) Font(style fyne.TextStyle) fyne.Resource {
 // Icon returns the default icon resource.
 func (th *Theme) Icon(name fyne.ThemeIconName) fyne.Resource {
 	return th.Base.Icon(name)
+}
+
+// SetThemeFromConfig sets the theme based on the config file.
+func (th *Theme) SetThemeFromConfig(config *handling.Config) {
+	if config.Theme.Mode == "dark" {
+		th.Base = theme.DarkTheme()
+	} else {
+		th.Base = theme.LightTheme()
+	}
+
+	// Apply custom colors from config.json
+	bg := parseHexColor(config.Theme.BackgroundColour)
+	fg := parseHexColor(config.Theme.TextColour)
+	primary := parseHexColor(config.Theme.PrimaryColour)
+	menu := parseHexColor(config.Theme.MenuColour)
+	editor := parseHexColor(config.Theme.EditorColour)
+	button := parseHexColor(config.Theme.ButtonColour)
+
+	// Load ZoomPercent (default to 100 if not set)
+	th.ZoomPercent = config.ZoomPercent
+	if th.ZoomPercent == 0 {
+		th.ZoomPercent = 100 // Default zoom
+	}
+
+	// Apply new theme
+	th.Base = NewCustomTheme(
+		bg, fg, primary, editor, menu, button,
+		LoadFont(config.Fonts.Default, theme.DefaultTextFont()),
+		LoadFont(config.Fonts.Bold, theme.DefaultTextBoldFont()),
+		LoadFont(config.Fonts.Italic, theme.DefaultTextItalicFont()),
+	)
+
+	fyne.CurrentApp().Settings().SetTheme(th) // Apply the theme to the app
+}
+
+// Converts HEX color codes to color.Color
+func parseHexColor(s string) color.Color {
+	s = strings.TrimPrefix(s, "#")
+	if len(s) != 6 {
+		return color.Black // Return black if invalid
+	}
+
+	r, _ := strconv.ParseUint(s[0:2], 16, 8)
+	g, _ := strconv.ParseUint(s[2:4], 16, 8)
+	b, _ := strconv.ParseUint(s[4:6], 16, 8)
+
+	return color.RGBA{uint8(r), uint8(g), uint8(b), 255}
+}
+
+// LoadFont tries to load a font file, otherwise returns default.
+func LoadFont(path string, fallback fyne.Resource) fyne.Resource {
+	if path == "" {
+		return fallback
+	}
+	font, err := fyne.LoadResourceFromPath(path)
+	if err != nil {
+		fyne.LogError("Failed to load font, using fallback", err)
+		return fallback
+	}
+	return font
 }

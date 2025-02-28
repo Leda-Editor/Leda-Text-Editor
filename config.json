@@ -1,0 +1,17 @@
+{
+    "theme": {
+        "mode": "light", 
+        "backgroundColour": "#FFFFFF",  
+        "textColour": "#000000",  
+        "primaryColour": "#6200EE",  
+        "editorColour": "#FFFFFF",  
+        "menuColour": "#FFFFFF", 
+        "buttonColour": "#FFFFFF"
+    },
+    "zoomPercent": 100,
+    "fonts": {
+        "default": "assets/fonts/OpenSans-Regular.ttf",
+        "bold": "assets/fonts/OpenSans-Bold.ttf",
+        "italic": "assets/fonts/OpenSans-Italic.ttf"
+    }
+}

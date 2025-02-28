@@ -78,6 +78,14 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 		ZoomLabel:           widget.NewLabelWithStyle("ZoomL 100%", fyne.TextAlignCenter, fyne.TextStyle{Bold: false}),
 	}
 
+	config, err := handling.LoadConfig("config.json")
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		config = &handling.Config{}
+	}
+
+	ui.Theme.SetThemeFromConfig(config)
+
 	ui.MenuBar = ui.CreateMenuBar()
 	ui.Theme.ApplyTheme()
 	ApplyUserTheme(ui)

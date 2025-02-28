@@ -41,7 +41,7 @@ func (ui *UI) performSearch() {
 	ui.SearchResults.SetText(fmt.Sprintf("Results: %d", count))
 
 	if count == 0 {
-		dialog.ShowInformation("Find", fmt.Sprintf("No occurrences of '%s' found.", term), ui.Window)
+		dialog.ShowInformation("ssFind", fmt.Sprintf("No occurrences of '%s' found.", term), ui.Window)
 	} else {
 		ui.CurrentMatchIdx = 0
 		ui.scrollToMatch(ui.CurrentMatchIdx)

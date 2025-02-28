@@ -9,15 +9,20 @@ import (
 
 // CustomTheme defines a theme with user-defined colors.
 type CustomTheme struct {
+	Base             fyne.Theme
 	Background       color.Color
 	Foreground       color.Color
 	EditorBg         color.Color
 	Primary          color.Color
 	MenuBg           color.Color
 	ButtonBackground color.Color
+	FontSize         float32
+	DefaultFont      fyne.Resource
+	BoldFont         fyne.Resource
+	ItalicFont       fyne.Resource
 }
 
-// Color overrides default colors with custom values.
+// Colour overrides default colors with custom values.
 func (t *CustomTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant) color.Color {
 	switch name {
 	case theme.ColorNameBackground:
@@ -34,13 +39,21 @@ func (t *CustomTheme) Color(name fyne.ThemeColorName, variant fyne.ThemeVariant)
 		return t.ButtonBackground
 	case theme.ColorNameSeparator:
 		return t.Primary
+	case theme.ColorNameOverlayBackground:
+		return t.Background
 	}
 	return theme.DefaultTheme().Color(name, variant) // Fallback to default
 }
 
-// Font overrides the default font.
+// Font overrides font based on style.
 func (t *CustomTheme) Font(style fyne.TextStyle) fyne.Resource {
-	return theme.DefaultTheme().Font(style) // Keep default font
+	if style.Bold {
+		return t.BoldFont
+	}
+	if style.Italic {
+		return t.ItalicFont
+	}
+	return t.DefaultFont
 }
 
 // Icon overrides the default icons.
@@ -54,7 +67,7 @@ func (t *CustomTheme) Size(name fyne.ThemeSizeName) float32 {
 }
 
 // NewCustomTheme initializes a theme with user-defined colors.
-func NewCustomTheme(bg, fg, primary, editorBg, menuBg, buttonBg color.Color) fyne.Theme {
+func NewCustomTheme(bg, fg, primary, editorBg, menuBg, buttonBg color.Color, defaultFont, boldFont, italicFont fyne.Resource) fyne.Theme {
 	return &CustomTheme{
 		Background:       bg,
 		Foreground:       fg,
@@ -62,5 +75,8 @@ func NewCustomTheme(bg, fg, primary, editorBg, menuBg, buttonBg color.Color) fyn
 		Primary:          primary,
 		MenuBg:           menuBg,
 		ButtonBackground: buttonBg,
+		DefaultFont:      defaultFont,
+		BoldFont:         boldFont,
+		ItalicFont:       italicFont,
 	}
 }
