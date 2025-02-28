@@ -226,7 +226,6 @@ func NewTheme(app fyne.App) *Theme {
 func (th *Theme) ZoomIn(ui *UI) {
 	if th.ZoomPercent < 200 { // Max limit to prevent excessive zooming
 		th.ZoomPercent += 10
-		_ = handling.SaveConfig("config.json", &handling.Config{ZoomPercent: th.ZoomPercent})
 	}
 	th.ApplyTheme()
 	ui.UpdateZoomLabel()
@@ -237,7 +236,6 @@ func (th *Theme) ZoomIn(ui *UI) {
 func (th *Theme) ZoomOut(ui *UI) {
 	if th.ZoomPercent > 50 { // Min limit to keep text readable
 		th.ZoomPercent -= 10
-		_ = handling.SaveConfig("config.json", &handling.Config{ZoomPercent: th.ZoomPercent})
 
 	}
 	th.ApplyTheme()
@@ -248,7 +246,6 @@ func (th *Theme) ZoomOut(ui *UI) {
 // ResetZoom resets the zoom level.
 func (th *Theme) ResetZoom(ui *UI) {
 	th.ZoomPercent = 100
-	_ = handling.SaveConfig("config.json", &handling.Config{ZoomPercent: 100})
 	th.ApplyTheme()
 	ui.UpdateZoomLabel()
 	ui.Window.Content().Refresh()

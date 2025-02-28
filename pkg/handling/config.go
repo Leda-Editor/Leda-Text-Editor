@@ -40,16 +40,3 @@ func LoadConfig(filename string) (*Config, error) {
 	}
 	return &config, nil
 }
-
-// SaveConfig writes the updated config values back to config.json
-func SaveConfig(filename string, config *Config) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	encoder := json.NewEncoder(file)
-	encoder.SetIndent("", "  ") // Pretty print JSON
-	return encoder.Encode(config)
-}
