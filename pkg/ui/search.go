@@ -15,15 +15,12 @@ func (ui *UI) performSearch() {
 	if term == "" {
 		ui.SearchResults.SetText("Results: 0")
 		ui.Matches = []int{}
-		ui.RenderMarkdown(ui.Editor.Text)
 		return
 	}
 
 	if ui.OriginalText == "" {
 		ui.OriginalText = ui.Editor.Text
 	}
-
-	ui.Editor.SetText(ui.OriginalText)
 
 	ui.Matches = []int{}
 	text := ui.Editor.Text
@@ -44,7 +41,7 @@ func (ui *UI) performSearch() {
 	ui.SearchResults.SetText(fmt.Sprintf("Results: %d", count))
 
 	if count == 0 {
-		dialog.ShowInformation("Find", fmt.Sprintf("No occurrences of '%s' found.", term), ui.Window)
+		dialog.ShowInformation("ssFind", fmt.Sprintf("No occurrences of '%s' found.", term), ui.Window)
 	} else {
 		ui.CurrentMatchIdx = 0
 		ui.scrollToMatch(ui.CurrentMatchIdx)
@@ -187,10 +184,11 @@ func (ui *UI) performReplaceAll() {
 // Toggle sidebar visibility.
 func (ui *UI) toggleSidebar() {
 	if ui.SidebarVisible {
-		if ui.OriginalText != "" {
+		if ui.OriginalText != "" && len(ui.Matches) > 0 {
 			ui.Editor.SetText(ui.OriginalText)
 		}
 		ui.OriginalText = ""
+		ui.Matches = nil
 	}
 
 	ui.SidebarVisible = !ui.SidebarVisible

@@ -118,7 +118,7 @@ func OpenThemePickerModal(app fyne.App, win fyne.Window, ui *UI) {
 
 	// Save button
 	saveThemeBtn := widget.NewButton("Save", func() {
-		SetCustomTheme(app, bg, fg, primary, editorBg, menuBg, buttonBg)
+		SetCustomTheme(app, bg, fg, primary, editorBg, menuBg, buttonBg, ui.Theme.ZoomPercent)
 		ui.Window.SetContent(ui.ApplyThemeToLayout())
 		ui.Window.Content().Refresh()
 		modal.Hide()

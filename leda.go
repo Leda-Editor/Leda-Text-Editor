@@ -10,6 +10,10 @@ func main() {
 	// Initialize Fyne Application.
 	app := app.NewWithID("leda-text-editor")
 
+	// Set app icon.
+	r, _ := fyne.LoadResourceFromPath("assets/leda_icon.png")
+	app.SetIcon(r)
+
 	// Create a new window for the application
 	window := app.NewWindow("Leda Text Editor")
 
