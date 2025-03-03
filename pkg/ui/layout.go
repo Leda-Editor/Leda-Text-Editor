@@ -74,7 +74,13 @@ func (ui *UI) Layout() fyne.CanvasObject {
 			content = container.NewScroll(ui.Editor)
 		}
 	}
-	return container.NewBorder(nil, statusBar, nil, nil, content)
+
+	mainSplit := container.NewVSplit(
+		content,     // top
+		ui.Terminal, // bottom
+	)
+	mainSplit.SetOffset(0.8)
+	return container.NewBorder(nil, statusBar, nil, nil, mainSplit)
 }
 
 func (ui *UI) UpdateLayout() {
