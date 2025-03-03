@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	handling "github.com/Leda-Editor/Leda-Text-Editor/pkg/handling"
+	"github.com/fyne-io/terminal"
 )
 
 // UI specifies the user interface.
@@ -25,6 +26,8 @@ type UI struct {
 	Markdown *widget.RichText
 	// MenuBar adds a menu to the window.
 	MenuBar *fyne.Container
+	// Terminal window
+	Terminal *terminal.Terminal
 	// Theme allows to customize theme, such as font size.
 	Theme *Theme
 	// CharacterLabel & LineLabel creates labels for the respective counters.
@@ -70,7 +73,7 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 		Theme:               theme,
 		CharacterLabel:      widget.NewLabelWithStyle("Characters: 0", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
 		LineLabel:           widget.NewLabelWithStyle("Lines: 0", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
-		CurrentFileLabel:	 widget.NewLabelWithStyle("Current File: None", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
+		CurrentFileLabel:    widget.NewLabelWithStyle("Current File: None", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
 		SearchAreaContainer: container.NewVBox(),
 		SearchTermEntry:     widget.NewEntry(),
 		ReplaceTermEntry:    widget.NewEntry(),
@@ -84,6 +87,14 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 	}
 
 	ui.MenuBar = ui.CreateMenuBar()
+	ui.Terminal = terminal.New()
+
+	go func() {
+		if err := ui.Terminal.RunLocalShell(); err != nil {
+			fmt.Println("Error running local shell:", err)
+		}
+	}()
+
 	ui.Theme.ApplyTheme()
 	ApplyUserTheme(ui)
 	ui.Window.Content().Refresh()
@@ -152,7 +163,7 @@ func (ui *UI) UpdateZoomLabel() {
 
 // called when current file is changed
 func (ui *UI) UpdateFileLabel(uri fyne.URI) {
-	if ui.CurrentFileLabel == nil  {
+	if ui.CurrentFileLabel == nil {
 		ui.CurrentFileLabel = widget.NewLabel("Current File: None")
 	}
 	filename := "None"
