@@ -15,6 +15,8 @@ Leda is a modern and lightweight text editor built using the Fyne framework. It 
 
 ## Build Showcase
 
+
+
 ![LedaEditor](assets/LedaEditor.png)
 
 ---
