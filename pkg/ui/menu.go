@@ -29,6 +29,9 @@ func (ui *UI) CreateMenuBar() *fyne.Container {
 		fyne.NewMenuItem("Set Custom Theme", func() {
 			OpenThemePickerModal(ui.App, ui.Window, ui)
 		}),
+		fyne.NewMenuItem("Toggle Terminal", func() {
+			ui.toggleTerminal()
+		}),
 	)
 
 	editMenu := fyne.NewMenu("Edit",

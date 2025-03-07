@@ -27,7 +27,8 @@ type UI struct {
 	// MenuBar adds a menu to the window.
 	MenuBar *fyne.Container
 	// Terminal window
-	Terminal *terminal.Terminal
+	Terminal     *terminal.Terminal
+	ShowTerminal bool
 	// Theme allows to customize theme, such as font size.
 	Theme *Theme
 	// CharacterLabel & LineLabel creates labels for the respective counters.
@@ -70,6 +71,8 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 		Window:              win,
 		Editor:              widget.NewMultiLineEntry(),
 		Markdown:            widget.NewRichTextFromMarkdown(""),
+		Terminal:            terminal.New(),
+		ShowTerminal:        false,
 		Theme:               theme,
 		CharacterLabel:      widget.NewLabelWithStyle("Characters: 0", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
 		LineLabel:           widget.NewLabelWithStyle("Lines: 0", fyne.TextAlignLeading, fyne.TextStyle{Bold: false}),
@@ -87,7 +90,6 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 	}
 
 	ui.MenuBar = ui.CreateMenuBar()
-	ui.Terminal = terminal.New()
 
 	go func() {
 		if err := ui.Terminal.RunLocalShell(); err != nil {
@@ -171,4 +173,9 @@ func (ui *UI) UpdateFileLabel(uri fyne.URI) {
 		filename = filepath.Base(uri.Path())
 	}
 	ui.CurrentFileLabel.SetText(fmt.Sprintf("Current File: %s", filename))
+}
+
+func (ui *UI) toggleTerminal() {
+	ui.ShowTerminal = !ui.ShowTerminal
+	ui.UpdateLayout()
 }

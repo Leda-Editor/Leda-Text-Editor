@@ -75,12 +75,21 @@ func (ui *UI) Layout() fyne.CanvasObject {
 		}
 	}
 
-	mainSplit := container.NewVSplit(
-		content,     // top
-		ui.Terminal, // bottom
-	)
-	mainSplit.SetOffset(0.8)
-	return container.NewBorder(nil, statusBar, nil, nil, mainSplit)
+	var mainArea fyne.CanvasObject
+	if ui.ShowTerminal {
+		// Show the Terminal in a VSplit (bottom).
+		mainSplit := container.NewVSplit(
+			content,     // top
+			ui.Terminal, // bottom
+		)
+		mainSplit.SetOffset(0.7) // 80% content, 20% terminal
+		mainArea = mainSplit
+	} else {
+		// No Terminal, so no VSplit — just return the content.
+		mainArea = content
+	}
+
+	return container.NewBorder(nil, statusBar, nil, nil, mainArea)
 }
 
 func (ui *UI) UpdateLayout() {
