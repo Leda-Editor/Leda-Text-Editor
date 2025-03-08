@@ -6,7 +6,7 @@ Leda is a modern and lightweight text editor built using the [Fyne](https://fyne
 
 ## Build Showcase
 
-![LedaEditor](assets/team3_LedaEditor.png)
+![LedaEditor](https://github.com/Leda-Editor/Leda-Text-Editor/blob/main/assets/team3_LedaEditor.png)
 
 ## Features  
 
