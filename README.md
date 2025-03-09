@@ -187,7 +187,7 @@ Leda’s file dialog and keyboard shortcuts behaved **differently on each OS**, 
 | **Aleksy Siek**   | **Key voice in team discussions** - actively shaping project direction and feature priorities. <br> **Leda pull request reviews** - providing feedback and ensuring high code quality. <br> **Directed feature implementation** - deciding what to build and how to approach key functionalities. <br> **Set up and maintained the CI pipeline** - ensuring stable builds across all platforms. <br> **Refactored and optimized code** - improving performance, maintainability, and fixing critical bugs. <br> **Enhanced documentation** - contributing to the **About section** and **README** for better project clarity. |
 | **Mate Saary**    | _ |
 | **Emon Monsur**   | _ |
-| **Oisin Portley** | _ |
+| **Oisin Portley** |Implemented various features for the text editor, including a dark mode toggle, a custom RGB theme picker modal, a native operating system terminal window, and additional UI structuring. Collaborated with the team by discussing ideas on Discord, and contributed to project planning and issue resolution on GitHub.|
 | **Eoghan Murch**  | _ |
 
 
