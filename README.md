@@ -14,7 +14,7 @@ Leda is a modern and lightweight text editor built using the [Fyne](https://fyne
 - Cross-platform support (Linux, macOS, Windows)  
 - Clean and minimalistic design  
 - Autosave functionality  
-- Dark/Light mode  
+- Dark/Light mode
 - Markdown parsing  
 - Open, edit, and save files  
 - Custom UI presets/layouts
@@ -91,11 +91,17 @@ Leda’s menu bar provides quick access to **essential features**, including:
 - **File Menu:**  
   - `Open File`: Load a text or Markdown file into the editor.  
   - `Save File`: Save the current content to a file.  
-  - `Clear Text`: Clear all text from the editor.  
+  - `Exit`: Close the application.
+  - `Auto-save`: Toggle automatic saving.
+  - `Open Config File`: Open config file for customization.
 
 - **View Menu:**  
   - `Zoom In/Out`: Adjust the font size dynamically.  
   - `Toggle Dark Mode`: Switch between light and dark themes for better readability.  
+  - `Set Custom Theme`: Open the theme customization settings.
+
+- **Edit Menu**
+  - `Search & Replace`: Open sidebar to find and replace efficiently.
 
 - **Help Menu:**  
   - `About`: Displays information about Leda.  
@@ -127,7 +133,18 @@ Leda provides **real-time text statistics**, displayed at the bottom of the edit
 - **Line count:** Displays the number of lines in the editor, similar to Vim.  
 - Updates dynamically as users type, giving immediate feedback on text length.  
 
-### **7. Integrated Live Terminal (Rendered at the Bottom of the Editor)**  
+### **7. Find and Replace with Sidebar Interface**
+Leda includes a Find and Replace sidebar for efficient text searching and modifications.
+
+- **Find Mode**
+  - Enter a keyword to highlight all matching occurrences in the document.
+  - Use **Find Next** and **Find Previous** to navigate through matches.
+- **Replace Mode**
+  - Replace individual or all occurrences of a term across the document.
+
+This makes text editing efficient in Leda, making it easy to locate and modify content in long documents.
+
+### **8. Integrated Live Terminal (Rendered at the Bottom of the Editor)**  
 Leda includes a **built-in terminal** at the bottom of the editor, allowing users to:  
 
 - Run shell commands directly within the editor.  
@@ -186,7 +203,7 @@ Leda’s file dialog and keyboard shortcuts behaved **differently on each OS**, 
 |-------------------|-------------------------------|
 | **Aleksy Siek**   | **Key voice in team discussions** - actively shaping project direction and feature priorities. <br> **Leda pull request reviews** - providing feedback and ensuring high code quality. <br> **Directed feature implementation** - deciding what to build and how to approach key functionalities. <br> **Set up and maintained the CI pipeline** - ensuring stable builds across all platforms. <br> **Refactored and optimized code** - improving performance, maintainability, and fixing critical bugs. <br> **Enhanced documentation** - contributing to the **About section** and **README** for better project clarity. |
 | **Mate Saary**    | _ |
-| **Emon Monsur**   | _ |
+| **Emon Monsur**   | Implemented a **Find & Replace** system with match highlighting, navigation buttons, and replace functionality for either individual or all occurrences of a term. Ensured current occurrences remained on screen by implementing automatic scrolling for searched term. <br> Developed **zoom functionality** adding zoom in, zoom out, and reset zoom options, with current zoom level displayed in the status bar. <br> Created a **structured menu system**, organising options into File, Edit, View, and Help options. <br> Added **live statistics**, including character and line counts to the status bar. <br> Implemented **reset custom theme** to revert default settings and ensured newly created features render properly with custom theming. <br> Integrated **JSON-based configuration**, enabling user-defined themes, fonts, and zoom levels to be loaded at Leda start and remain persistent across sessions. <br> Created GitHub issues, performed pull requests, and managed merge conflicts. <br> Implemented **keyboard shortcuts** for functions such as open search-bar, zoom in/out, save/open file, etc.|
 | **Oisin Portley** |Implemented various features for the text editor, including a dark mode toggle, a custom RGB theme picker modal, a native operating system terminal window, and additional UI structuring. Collaborated with the team by discussing ideas on Discord, and contributed to project planning and issue resolution on GitHub.|
 | **Eoghan Murch**  | _ |
 
