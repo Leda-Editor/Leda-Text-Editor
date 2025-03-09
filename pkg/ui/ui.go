@@ -94,9 +94,7 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 		config = &handling.Config{}
 	}
 
-	fyne.Do(func() {
-		ui.Theme.SetThemeFromConfig(config)
-	})
+	ui.Theme.SetThemeFromConfig(config)
 
 	ui.MenuBar = ui.CreateMenuBar()
 	ui.Terminal = terminal.New()
@@ -105,17 +103,13 @@ func NewUI(app fyne.App, win fyne.Window) *UI {
 		// Wait before starting the shell to prevent resizing errors
 		time.Sleep(time.Millisecond * 500)
 		if err := ui.Terminal.RunLocalShell(); err != nil {
-			fyne.Do(func() {
-				fmt.Println("Error running local shell:", err)
-			})
+			fmt.Println("Error running local shell:", err)
 		}
 	}()
 
 	ui.Theme.ApplyTheme()
 	ApplyUserTheme(ui)
-	fyne.Do(func() {
-		ui.Window.Content().Refresh()
-	})
+	ui.Window.Content().Refresh()
 
 	registerShortcuts(win, ui)
 
@@ -195,9 +189,7 @@ func registerShortcuts(win fyne.Window, ui *UI) {
 // Updates Markdown Preview.
 func (ui *UI) RenderMarkdown(input string) {
 	ui.Markdown.ParseMarkdown(input)
-	fyne.Do(func() {
-		ui.Markdown.Refresh()
-	})
+	ui.Markdown.Refresh()
 }
 
 // Zoom In/Out.
@@ -216,9 +208,7 @@ func (ui *UI) ResetZoom() {
 	ui.Theme.ZoomPercent = 100
 	ui.Theme.ApplyTheme()
 	ui.UpdateZoomLabel()
-	fyne.Do(func() {
-		ui.Window.Content().Refresh()
-	})
+	ui.Window.Content().Refresh()
 }
 
 // Toggle visibility of Markdown preview.
@@ -239,9 +229,7 @@ func (ui *UI) UpdateCounts(content string) {
 
 func (ui *UI) UpdateZoomLabel() {
 	ui.ZoomLabel.SetText(fmt.Sprintf("Zoom: %d%%", ui.Theme.ZoomPercent))
-	fyne.Do(func() {
-		ui.Window.Content().Refresh()
-	})
+	ui.Window.Content().Refresh()
 }
 
 // called when current file is changed
